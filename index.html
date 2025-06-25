@@ -151,7 +151,7 @@ function showSummary() {
   }
   html += '</ul>';
   document.getElementById("questionContainer").innerHTML = html;
-  document.getElementById("result").innerHTML = "全部评估已完成。可通过浏览器打印功能保存。";
+  document.getElementById("result").innerHTML = `全部评估已完成。<br><br><button onclick="window.print()">📄 打印或保存为 PDF 简报</button>`;
 }
 
 renderPerson();
