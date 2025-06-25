@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工作态度评估问卷</title>
+  <style>
+    body { font-family: 'Microsoft YaHei', sans-serif; padding: 20px; background: #f5f5f5; }
+    .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; }
+    label { font-weight: bold; margin-top: 20px; display: block; }
+    .question { margin-bottom: 20px; }
+    .scale label { font-weight: normal; margin-right: 10px; }
+    .result { font-size: 1.2em; font-weight: bold; text-align: center; margin-top: 30px; color: #444; }
+    .footer { font-size: 0.9em; text-align: center; color: #aaa; margin-top: 40px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>舞台技术部 · 工作态度评估问卷</h2>
+
+  <form id="surveyForm">
+    <div id="questions"></div>
+    <div class="result" id="result"></div>
+  </form>
+
+  <div class="footer">© 上海杂技团& 舞台技术部</div>
+</div>
+
+<script>
+  const questions = [
+    "该员工在无需指示的情况下也能主动完成本职工作。",
+    "在突发任务或临时需要支援时，该员工能够积极配合。",
+    "该员工在工作中表现出持续的责任感和稳定性。",
+    "该员工从不推诿工作，并能承担相应的工作压力。",
+    "该员工能与其他岗位（灯光、音响、舞台等）顺畅配合。",
+    "该员工能及时响应上级安排并有效反馈进展。",
+    "该员工从不迟到、早退、无故请假，考勤记录良好。",
+    "遇到工作困难时，该员工提出建设性建议而非抱怨。",
+    "该员工能维护现场秩序，尊重他人劳动成果。",
+    "整体而言，该员工具备良好的职业素养与团队意识。"
+  ];
+
+  const container = document.getElementById("questions");
+  questions.forEach((q, i) => {
+    const div = document.createElement("div");
+    div.className = "question";
+    div.innerHTML = `<label>${i + 1}. ${q}</label>` +
+      [5, 4, 3, 2, 1].map(score =>
+        `<label class='scale'><input type='radio' name='q${i}' value='${score}'>${score}</label>`
+      ).join(" ");
+    container.appendChild(div);
+  });
+
+  container.insertAdjacentHTML('afterend', `<button type='button' onclick='calculate()'>提交评分</button>`);
+
+  function calculate() {
+    let total = 0;
+    for (let i = 0; i < questions.length; i++) {
+      const radios = document.getElementsByName(`q${i}`);
+      let selected = false;
+      for (const radio of radios) {
+        if (radio.checked) {
+          total += parseInt(radio.value);
+          selected = true;
+          break;
+        }
+      }
+      if (!selected) {
+        alert(`第 ${i + 1} 题未填写！`);
+        return;
+      }
+    }
+
+    let grade = "";
+    if (total >= 48) grade = "A+";
+    else if (total >= 46) grade = "A";
+    else if (total >= 44) grade = "A-";
+    else if (total >= 41) grade = "B+";
+    else if (total >= 38) grade = "B";
+    else if (total >= 35) grade = "B-";
+    else if (total >= 32) grade = "C+";
+    else if (total >= 28) grade = "C";
+    else if (total >= 25) grade = "C-";
+    else if (total >= 22) grade = "D+";
+    else if (total >= 18) grade = "D";
+    else grade = "D-";
+
+    document.getElementById("result").innerHTML =
+      `总分：${total} / 50<br>对应态度评分等级：<strong>${grade}</strong>`;
+  }
+</script>
+</body>
+</html>
