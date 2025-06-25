@@ -13,18 +13,48 @@
     .scale label { font-weight: normal; margin-right: 10px; }
     .result { font-size: 1.2em; font-weight: bold; text-align: center; margin-top: 30px; color: #444; }
     .footer { font-size: 0.9em; text-align: center; color: #aaa; margin-top: 40px; }
+    .print-button { margin-top: 30px; display: flex; justify-content: center; }
   </style>
 </head>
 <body>
-<div class="container">
+<div class="container" id="surveyContainer">
   <h2>舞台技术部 · 工作态度评估问卷</h2>
+
+  <p><strong>说明：</strong>请根据员工日常工作表现进行评分。评分标准如下：<br>
+  5 = 非常同意  4 = 同意  3 = 一般  2 = 不同意  1 = 非常不同意</p>
+
+  <label for="name">受评人姓名：</label>
+  <select id="name">
+    <option value="">请选择姓名</option>
+    <option>张雨萱（灯光设计）</option>
+    <option>王健敏（灯光技术）</option>
+    <option>桂之秋（灯光技术）</option>
+    <option>刁祥林（舞台技术）</option>
+    <option>卢钊（舞台技术）</option>
+    <option>随李卫（舞台技术）</option>
+    <option>梁俊杰（舞台技术）</option>
+    <option>吴启有（舞台技术）</option>
+    <option>袁海祥（舞台技术）</option>
+    <option>韩荣强（舞台机械）</option>
+    <option>王佳辉（舞台机械）</option>
+    <option>刘坤（多媒体）</option>
+    <option>任佳雯（多媒体）</option>
+    <option>高雅（服装）</option>
+    <option>戴鹏程（音响）</option>
+    <option>毛璟琦（音响）</option>
+    <option>朱刚（舞台技术部主管）</option>
+  </select>
 
   <form id="surveyForm">
     <div id="questions"></div>
     <div class="result" id="result"></div>
   </form>
 
-  <div class="footer">© 上海杂技团& 舞台技术部</div>
+  <div class="print-button">
+    <button onclick="window.print()">导出为 PDF 简报</button>
+  </div>
+
+  <div class="footer">© 上海杂技团 & 舞台技术部</div>
 </div>
 
 <script>
@@ -86,8 +116,14 @@
     else if (total >= 18) grade = "D";
     else grade = "D-";
 
+    const name = document.getElementById("name").value;
+    if (!name) {
+      alert("请先选择被评估人的姓名。");
+      return;
+    }
+
     document.getElementById("result").innerHTML =
-      `总分：${total} / 50<br>对应态度评分等级：<strong>${grade}</strong>`;
+      `受评人：<strong>${name}</strong><br>总分：${total} / 50<br>对应态度评分等级：<strong>${grade}</strong>`;
   }
 </script>
 </body>
