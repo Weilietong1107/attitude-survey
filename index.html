@@ -3,128 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>工作态度评估问卷</title>
+  <title>舞台技术部 · 工作态度评估</title>
   <style>
     body { font-family: 'Microsoft YaHei', sans-serif; padding: 20px; background: #f5f5f5; }
     .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     h2 { text-align: center; }
-    label { font-weight: bold; margin-top: 20px; display: block; }
     .question { margin-bottom: 20px; }
-    .scale label { font-weight: normal; margin-right: 10px; }
-    .result { font-size: 1.2em; font-weight: bold; text-align: center; margin-top: 30px; color: #444; }
+    .scale label { margin-right: 10px; }
+    .result { font-size: 1em; font-weight: bold; text-align: center; margin-top: 20px; color: #444; }
+    .nav { text-align: center; margin-top: 30px; }
     .footer { font-size: 0.9em; text-align: center; color: #aaa; margin-top: 40px; }
-    .print-button { margin-top: 30px; display: flex; justify-content: center; }
+    button { padding: 8px 20px; margin: 5px; }
   </style>
 </head>
 <body>
-<div class="container" id="surveyContainer">
+<div class="container">
   <h2>舞台技术部 · 工作态度评估问卷</h2>
-
-  <p><strong>说明：</strong>请根据员工日常工作表现进行评分。评分标准如下：<br>
-  5 = 非常同意  4 = 同意  3 = 一般  2 = 不同意  1 = 非常不同意</p>
-
-  <label for="name">受评人姓名：</label>
-  <select id="name">
-    <option value="">请选择姓名</option>
-    <option>张雨萱（灯光设计）</option>
-    <option>王健敏（灯光技术）</option>
-    <option>桂之秋（灯光技术）</option>
-    <option>刁祥林（舞台技术）</option>
-    <option>卢钊（舞台技术）</option>
-    <option>随李卫（舞台技术）</option>
-    <option>梁俊杰（舞台技术）</option>
-    <option>吴启有（舞台技术）</option>
-    <option>袁海祥（舞台技术）</option>
-    <option>韩荣强（舞台机械）</option>
-    <option>王佳辉（舞台机械）</option>
-    <option>刘坤（多媒体）</option>
-    <option>任佳雯（多媒体）</option>
-    <option>高雅（服装）</option>
-    <option>戴鹏程（音响）</option>
-    <option>毛璟琦（音响）</option>
-    <option>朱刚（舞台技术部主管）</option>
-  </select>
+  <p><strong>说明：</strong>请根据员工日常表现进行评分。每题评分如下：<br>
+    <strong>5 = 非常同意 4 = 同意 3 = 一般 2 = 不同意 1 = 非常不同意</strong>
+  </p>
 
   <form id="surveyForm">
-    <div id="questions"></div>
+    <div id="questionContainer"></div>
     <div class="result" id="result"></div>
+    <div class="nav">
+      <button type="button" onclick="prevPerson()">上一位</button>
+      <button type="button" onclick="nextPerson()">下一位</button>
+    </div>
   </form>
-
-  <div class="print-button">
-    <button onclick="window.print()">导出为 PDF 简报</button>
-  </div>
 
   <div class="footer">© 上海杂技团 & 舞台技术部</div>
 </div>
 
 <script>
-  const questions = [
-    "该员工在无需指示的情况下也能主动完成本职工作。",
-    "在突发任务或临时需要支援时，该员工能够积极配合。",
-    "该员工在工作中表现出持续的责任感和稳定性。",
-    "该员工从不推诿工作，并能承担相应的工作压力。",
-    "该员工能与其他岗位（灯光、音响、舞台等）顺畅配合。",
-    "该员工能及时响应上级安排并有效反馈进展。",
-    "该员工从不迟到、早退、无故请假，考勤记录良好。",
-    "遇到工作困难时，该员工提出建设性建议而非抱怨。",
-    "该员工能维护现场秩序，尊重他人劳动成果。",
-    "整体而言，该员工具备良好的职业素养与团队意识。"
-  ];
+const people = [
+  "张雨萱（灯光设计）",
+  "王健敏（灯光技术）",
+  "桂之秋（灯光技术）",
+  "刁祥林（舞台技术）",
+  "卢钊（舞台技术）",
+  "随李卫（舞台技术）",
+  "梁俊杰（舞台技术）",
+  "吴启有（舞台技术）",
+  "袁海祥（舞台技术）",
+  "韩荣强（舞台机械）",
+  "王佳辉（舞台机械）",
+  "刘坤（多媒体）",
+  "任佳雯（多媒体）",
+  "高雅（服装）",
+  "戴鹏程（音响）",
+  "毛璟琦（音响）",
+  "朱刚（舞台技术部主管）"
+];
 
-  const container = document.getElementById("questions");
+const questions = [
+  "该员工在无需指示的情况下也能主动完成本职工作。",
+  "在突发任务或临时需要支援时，该员工能够积极配合。",
+  "该员工在工作中表现出持续的责任感和稳定性。",
+  "该员工从不推诿工作，并能承担相应的工作压力。",
+  "该员工能与其他岗位（灯光、音响、舞台等）顺畅配合。",
+  "该员工能及时响应上级安排并有效反馈进展。",
+  "该员工从不迟到、早退、无故请假，考勤记录良好。",
+  "遇到工作困难时，该员工提出建设性建议而非抱怨。",
+  "该员工能维护现场秩序，尊重他人劳动成果。",
+  "整体而言，该员工具备良好的职业素养与团队意识。"
+];
+
+let currentIndex = 0;
+const scores = {};
+
+function renderPerson() {
+  const container = document.getElementById("questionContainer");
+  const person = people[currentIndex];
+  container.innerHTML = `<h3>评估对象：${person}</h3>`;
+
   questions.forEach((q, i) => {
     const div = document.createElement("div");
     div.className = "question";
-    div.innerHTML = `<label>${i + 1}. ${q}</label>` +
+    div.innerHTML = `<label>${i + 1}. ${q}</label><br>` +
       [5, 4, 3, 2, 1].map(score =>
-        `<label class='scale'><input type='radio' name='q${i}' value='${score}'>${score}</label>`
+        `<label class='scale'><input type='radio' name='q${i}' value='${score}'>${score} - ${['非常同意','同意','一般','不同意','非常不同意'][5 - score]}</label>`
       ).join(" ");
     container.appendChild(div);
   });
 
-  container.insertAdjacentHTML('afterend', `<button type='button' onclick='calculate()'>提交评分</button>`);
+  document.getElementById("result").innerText = "";
+}
 
-  function calculate() {
-    let total = 0;
-    for (let i = 0; i < questions.length; i++) {
-      const radios = document.getElementsByName(`q${i}`);
-      let selected = false;
-      for (const radio of radios) {
-        if (radio.checked) {
-          total += parseInt(radio.value);
-          selected = true;
-          break;
-        }
-      }
-      if (!selected) {
-        alert(`第 ${i + 1} 题未填写！`);
-        return;
-      }
+function saveCurrentScores() {
+  const answers = [];
+  for (let i = 0; i < questions.length; i++) {
+    const radios = document.getElementsByName(`q${i}`);
+    let value = null;
+    for (const r of radios) {
+      if (r.checked) value = parseInt(r.value);
     }
-
-    let grade = "";
-    if (total >= 48) grade = "A+";
-    else if (total >= 46) grade = "A";
-    else if (total >= 44) grade = "A-";
-    else if (total >= 41) grade = "B+";
-    else if (total >= 38) grade = "B";
-    else if (total >= 35) grade = "B-";
-    else if (total >= 32) grade = "C+";
-    else if (total >= 28) grade = "C";
-    else if (total >= 25) grade = "C-";
-    else if (total >= 22) grade = "D+";
-    else if (total >= 18) grade = "D";
-    else grade = "D-";
-
-    const name = document.getElementById("name").value;
-    if (!name) {
-      alert("请先选择被评估人的姓名。");
-      return;
+    if (value === null) {
+      alert(`请完成第 ${i + 1} 题后再继续。`);
+      return false;
     }
-
-    document.getElementById("result").innerHTML =
-      `受评人：<strong>${name}</strong><br>总分：${total} / 50<br>对应态度评分等级：<strong>${grade}</strong>`;
+    answers.push(value);
   }
+  scores[people[currentIndex]] = answers;
+  return true;
+}
+
+function calculateGrade(total) {
+  if (total >= 48) return "A+";
+  if (total >= 46) return "A";
+  if (total >= 44) return "A-";
+  if (total >= 41) return "B+";
+  if (total >= 38) return "B";
+  if (total >= 35) return "B-";
+  if (total >= 32) return "C+";
+  if (total >= 28) return "C";
+  if (total >= 25) return "C-";
+  if (total >= 22) return "D+";
+  if (total >= 18) return "D";
+  return "D-";
+}
+
+function nextPerson() {
+  if (!saveCurrentScores()) return;
+  if (currentIndex < people.length - 1) {
+    currentIndex++;
+    renderPerson();
+  } else {
+    showSummary();
+  }
+}
+
+function prevPerson() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderPerson();
+  }
+}
+
+function showSummary() {
+  const container = document.getElementById("questionContainer");
+  container.innerHTML = `<h3>评分汇总结果：</h3>`;
+  let html = '<ul>';
+  for (const name in scores) {
+    const total = scores[name].reduce((a, b) => a + b, 0);
+    const grade = calculateGrade(total);
+    html += `<li><strong>${name}</strong>：${total} / 50，等级：<strong>${grade}</strong></li>`;
+  }
+  html += '</ul>';
+  document.getElementById("questionContainer").innerHTML = html;
+  document.getElementById("result").innerHTML = "全部评估已完成。可通过浏览器打印功能保存。";
+}
+
+renderPerson();
 </script>
 </body>
 </html>
